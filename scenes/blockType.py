@@ -8,7 +8,7 @@ def get_terrain_block(size, x, y):
     surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)
     rect = pygame.Rect(x, y, size, size)
     surface.blit(image, (0,0), rect)
-    return surface
+    return pygame.transform.scale2x(surface)
 
 
 def get_block(size, type):

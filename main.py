@@ -1,27 +1,34 @@
 import pygame
 import global_variables as gv
-from scenes.background import get_background
-from scenes.sceneOne import create_scene_one
 
+# initialize pygame display and window at the very start to avoid problems with initialization of other surfaces
 pygame.init()
 pygame.display.set_caption("Platformer")
-
 gv.init()
-
 window = pygame.display.set_mode((gv.WIDTH, gv.HEIGHT))
 
-def draw(window, background, bg_image, objects):
+from scenes.background import get_background
+from scenes.sceneOne import create_scene_one
+from objects.player import Player
+
+
+
+def draw(window, background, bg_image, objects, player):
     for tile in background:
         window.blit(bg_image, tile)
 
     for obj in objects:
         obj.draw(window)
 
+    player.draw(window)
+
     pygame.display.update()
 
 def main(window):
     clock = pygame.time.Clock()
     background, bg_image = get_background("Blue.png")
+
+    player = Player(80, 80, 40, 40)
 
     scene_one_objects = create_scene_one()
 
@@ -34,7 +41,8 @@ def main(window):
                 run = False
                 break
 
-        draw(window, background, bg_image, scene_one_objects)
+        player.loop(gv.FPS)
+        draw(window, background, bg_image, scene_one_objects, player)
 
     pygame.quit()
     quit()
