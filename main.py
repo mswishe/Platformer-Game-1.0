@@ -11,7 +11,33 @@ from scenes.background import get_background
 from scenes.sceneOne import create_scene_one
 from objects.player import Player
 
+def vertical_collision(player, objects, y_vel):
+    collided_objects = []
 
+    for obj in objects:
+        if pygame.sprite.collide_mask(player, obj):
+            if y_vel > 0:
+                player.rect.bottom = obj.rect.top
+                player.landed()
+            elif y_vel < 0:
+                player.rect.top = obj.rect.bottom
+                player.hit_head()
+
+            collided_objects.append(obj)
+
+    return collided_objects
+
+def handle_move(player, objects):
+    keys = pygame.key.get_pressed()
+
+    player.x_vel = 0
+
+    if keys[pygame.K_a]:
+        player.move_left(gv.PLAYER_VEL)
+    if keys[pygame.K_d]:
+        player.move_right(gv.PLAYER_VEL)
+
+    vertical_collision(player, objects, player.y_vel)
 
 def draw(window, background, bg_image, objects, player):
     for tile in background:
@@ -42,6 +68,7 @@ def main(window):
                 break
 
         player.loop(gv.FPS)
+        handle_move(player, scene_one_objects)
         draw(window, background, bg_image, scene_one_objects, player)
 
     pygame.quit()

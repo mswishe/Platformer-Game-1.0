@@ -24,6 +24,27 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += dx
         self.rect.y += dy
 
+    def move_left(self, vel):
+        self.x_vel = -vel
+        if self.direction != 'left':
+            self.direction = 'left'
+            self.animation_count = 0
+
+    def move_right(self, vel):
+        self.x_vel = vel
+        if self.direction != 'right':
+            self.direction = 'right'
+            self.animation_count = 0
+
+    def hit_head(self):
+        self.fall_count = 0
+        self.y_vel *= -1
+
+    def landed(self):
+        self.fall_count = 0
+        self.y_vel = 0
+        self.jump_count = 0
+
     def loop(self, fps):
         self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)
         self.move(self.x_vel, self.y_vel)
@@ -33,6 +54,8 @@ class Player(pygame.sprite.Sprite):
 
     def update_sprite(self):
         sprite_sheet = 'Idle'
+        if self.x_vel != 0:
+            sprite_sheet = 'Run'
 
         sprite_sheet_name = sprite_sheet + "_" + self.direction
         sprites = self.SPRITES[sprite_sheet_name]
