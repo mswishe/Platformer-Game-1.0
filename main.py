@@ -27,14 +27,30 @@ def vertical_collision(player, objects, y_vel):
 
     return collided_objects
 
+def collide(player, objects, dx):
+    player.move(dx, 0)
+    player.update()
+    collided_object = None
+
+    for obj in objects:
+        if pygame.sprite.collide_mask(player, obj):
+            collided_object = obj
+            break
+
+    player.move(-dx, 0)
+    player.update()
+    return collided_object
+
 def handle_move(player, objects):
     keys = pygame.key.get_pressed()
 
     player.x_vel = 0
+    collided_left = collide(player, objects, -gv.PLAYER_VEL * 2)
+    collided_right = collide(player, objects, gv.PLAYER_VEL * 2)
 
-    if keys[pygame.K_a]:
+    if keys[pygame.K_a] and not collided_left:
         player.move_left(gv.PLAYER_VEL)
-    if keys[pygame.K_d]:
+    if keys[pygame.K_d] and not collided_right:
         player.move_right(gv.PLAYER_VEL)
 
     vertical_collision(player, objects, player.y_vel)
@@ -66,6 +82,10 @@ def main(window):
             if event.type == pygame.QUIT:
                 run = False
                 break
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and player.jump_count < 2:
+                    player.jump()
 
         player.loop(gv.FPS)
         handle_move(player, scene_one_objects)

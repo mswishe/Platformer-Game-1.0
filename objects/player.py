@@ -3,7 +3,7 @@ from scenes.spriteSheets import load_sprite_sheet
 
 class Player(pygame.sprite.Sprite):
     GRAVITY = 1
-    ANIMATION_DELAY = 3
+    ANIMATION_DELAY = 4
     SPRITES = load_sprite_sheet('Main Characters', 'Ninja Frog', 32, 32, True)
 
     def __init__(self, x, y, width, height):
@@ -36,6 +36,14 @@ class Player(pygame.sprite.Sprite):
             self.direction = 'right'
             self.animation_count = 0
 
+    def jump(self):
+        self.y_vel = -self.GRAVITY * 8 
+        self.animation_count = 0
+        self.jump_count += 1
+        
+        if self.jump_count == 1:
+            self.fall_count = 0
+
     def hit_head(self):
         self.fall_count = 0
         self.y_vel *= -1
@@ -54,7 +62,14 @@ class Player(pygame.sprite.Sprite):
 
     def update_sprite(self):
         sprite_sheet = 'Idle'
-        if self.x_vel != 0:
+        if self.y_vel < 0:
+            if self.jump_count == 1:
+                sprite_sheet = 'Jump'
+            elif self.jump_count == 2:
+                sprite_sheet = 'Double Jump'
+        elif self.y_vel > self.GRAVITY * 2:
+            sprite_sheet = 'Fall'
+        elif self.x_vel != 0:
             sprite_sheet = 'Run'
 
         sprite_sheet_name = sprite_sheet + "_" + self.direction
