@@ -23,9 +23,9 @@ def load_sprite_sheet(dir1, dir2, width, height, direction=False):
             sprites.append(pygame.transform.scale2x(surface))
 
         if direction:
-            all_sprites[image.replace(' (32x32).png', '') + '_right'] = sprites
-            all_sprites[image.replace(' (32x32).png', '') + '_left'] = flip(sprites)
+            all_sprites[image.replace('.png', '') + '_right'] = sprites
+            all_sprites[image.replace('.png', '') + '_left'] = flip(sprites)
         else:
-            all_sprites[image.replace(' (32x32).png', '')] = sprites
+            all_sprites[image.replace('.png', '')] = sprites
 
     return all_sprites

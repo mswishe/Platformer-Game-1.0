@@ -55,14 +55,14 @@ def handle_move(player, objects):
 
     vertical_collision(player, objects, player.y_vel)
 
-def draw(window, background, bg_image, objects, player):
+def draw(window, background, bg_image, objects, player, offset_x):
     for tile in background:
         window.blit(bg_image, tile)
 
     for obj in objects:
-        obj.draw(window)
+        obj.draw(window, offset_x)
 
-    player.draw(window)
+    player.draw(window, offset_x)
 
     pygame.display.update()
 
@@ -70,9 +70,12 @@ def main(window):
     clock = pygame.time.Clock()
     background, bg_image = get_background("Blue.png")
 
-    player = Player(80, 80, 40, 40)
+    player = Player(100, 80, 40, 40)
 
     scene_one_objects = create_scene_one()
+
+    offset_x = 0
+    scroll_area_width = 160
 
     run = True
     while(run):
@@ -89,7 +92,11 @@ def main(window):
 
         player.loop(gv.FPS)
         handle_move(player, scene_one_objects)
-        draw(window, background, bg_image, scene_one_objects, player)
+        draw(window, background, bg_image, scene_one_objects, player, offset_x)
+
+        if((player.rect.right - offset_x >= gv.WIDTH - scroll_area_width) and player.x_vel > 0) or (
+            (player.rect.left - offset_x <= scroll_area_width) and player.x_vel < 0):
+            offset_x += player.x_vel
 
     pygame.quit()
     quit()
