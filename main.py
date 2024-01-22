@@ -10,6 +10,7 @@ window = pygame.display.set_mode((gv.WIDTH, gv.HEIGHT))
 from scenes.background import get_background
 from scenes.sceneOne import create_scene_one
 from objects.player import Player
+from objects.end import End
 
 def vertical_collision(player, objects, y_vel):
     collided_objects = []
@@ -73,6 +74,9 @@ def main(window):
     player = Player(100, 80, 40, 40)
 
     scene_one_objects = create_scene_one()
+    end = End((gv.WIDTH * 2) - 35 - gv.BLOCK_SIZE, gv.HEIGHT - (gv.BLOCK_SIZE * 2) - 25, 64, 64)
+
+    scene_one_objects.append(end)
 
     offset_x = 0
     scroll_area_width = 160
@@ -91,6 +95,7 @@ def main(window):
                     player.jump()
 
         player.loop(gv.FPS)
+        end.loop()
         handle_move(player, scene_one_objects)
         draw(window, background, bg_image, scene_one_objects, player, offset_x)
 
